@@ -36,8 +36,8 @@ const Main = () => {
     return (
         <>
             <div className='d-flex flex-column align-items-center justify-center'>
-                <h2>Photos i am in!</h2>
-                <p>Filters out all images in which the given face is present</p>
+                <h2>Things you wanted !!</h2>
+                <p>Filters out all images </p>
             </div>
             <DragNDrop
                 operationToBePerformed={f}
