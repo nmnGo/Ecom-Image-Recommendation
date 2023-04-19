@@ -1,46 +1,38 @@
 import React from 'react'
-import { get_images_with_given_face } from '../controllers/image';
 import DragNDrop from '../components/DragNDrop';
 import { toast } from 'react-hot-toast';
 import { useState } from 'react';
+import { get_image_with_emotions } from '../controllers/image';
 
-const Main = () => {
-    const [img_links, setImgLinks] = useState([]);
+const Sentiment = () => {
+
+    const [emotion_file, setEmotionFile] = useState("");
     const [files, setFiles] = useState([]);
-    const [completed, setcompleted] = useState(false);
 
-    const f = async (file) => {
-        setcompleted(false);
+    const get_emotions = async (file) => {
         toast.success("Image uploaded Success")
-        const toastId = toast.loading('Processing Images....please be patient');
+        const toastId = toast.loading('Processing Image....please be patient');
         console.log("IT STARTED")
         let fd = new FormData();
         console.log("FILE : ", file);
         fd.append("file", file)
-        get_images_with_given_face(fd).then((result) => {
+        get_image_with_emotions(fd).then((result) => {
+            setEmotionFile(result)
             console.log(result)
-            if (result?.tag === true) {
-                toast.success('Process Completed Success', {
-                    id: toastId,
-                });
-            }
-            else {
-                return;
-            }
-            setImgLinks(result?.results);
+            toast.success('Operation Completed', {
+                id: toastId,
+            });
             console.log("IT ENDED")
-            setcompleted(true);
         })
     }
-
     return (
         <>
             <div className='d-flex flex-column align-items-center justify-center'>
-                <h2>Photos i am in!</h2>
-                <p>Filters out all images in which the given face is present</p>
+                <h2>Know the sentiment!</h2>
+                <p>Describes the mood and emotion of all the faces present in the image</p>
             </div>
             <DragNDrop
-                operationToBePerformed={f}
+                operationToBePerformed={get_emotions}
                 files={files}
                 setFiles={setFiles}
             />
@@ -56,16 +48,17 @@ const Main = () => {
                 </div>
             }
             <div className='container' id="output_images">
-                {completed &&
-                    <>OUTPUT IMAGES :
+                {emotion_file &&
+                    <>OUTPUT IMAGE :
                         <div
                             className='rounded-3 my-3 d-flex align-items-center justify-content-around border border-light flex-wrap'
                             style={{ background: "#f3f3f3", boxShadow: "0 2px 4px 0 rgba(50,50,50,.3)" }}
                         >
-                            {img_links?.map(link => <div key={link} className='my-3 rounded-3'>
-                                <img src={"/hisab/"+link}
-                                    style={{ maxHeight: "300px", maxHeight: "400px", borderRadius: "15px 15px 15px 15px" }}
-                                ></img></div>)}
+                            <div className='my-3 rounded-3'>
+                                <img src={emotion_file}
+                                     style={{ maxHeight: "300px", maxHeight: "400px", borderRadius: "15px 15px 15px 15px" }}
+                                ></img></div>
+
                         </div>
                     </>}
             </div>
@@ -73,4 +66,4 @@ const Main = () => {
     )
 }
 
-export default Main
+export default Sentiment
